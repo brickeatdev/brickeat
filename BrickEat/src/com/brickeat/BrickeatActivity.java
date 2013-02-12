@@ -18,6 +18,8 @@ import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
 import org.andengine.util.color.Color;
 
+import android.widget.LinearLayout;
+
 import com.brickeat.util.constants.BrickeatConstants;
 
 /**
@@ -31,9 +33,10 @@ public class BrickeatActivity extends SimpleBaseGameActivity implements Brickeat
 	// ===========================================================
 	// Constants
 	// ===========================================================
+	LinearLayout ll;
 
-	private static final int CAMERA_WIDTH = GAME_WIDTH;
-	private static final int CAMERA_HEIGHT = GAME_HEIGHT;
+	private int CAMERA_WIDTH = GAME_WIDTH;
+	private int CAMERA_HEIGHT = GAME_HEIGHT;
 
 	// ===========================================================
 	// Fields
@@ -57,6 +60,10 @@ public class BrickeatActivity extends SimpleBaseGameActivity implements Brickeat
 
 	@Override
 	public EngineOptions onCreateEngineOptions() {
+		// TAILLE AUTO
+//        ll = (LinearLayout)findViewById(R.id.fullscreen_content);
+//        CAMERA_WIDTH = ll.getWidth();
+//        CAMERA_HEIGHT = ll.getHeight();
 		this.mCamera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
 		this.mCamera.setCenter(0,0);
 
@@ -70,11 +77,7 @@ public class BrickeatActivity extends SimpleBaseGameActivity implements Brickeat
 
 	@Override
 	public void onCreateResources() {
-		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
-		
-		this.mBitmapTextureAtlas = new BitmapTextureAtlas(this.getTextureManager(), CAMERA_WIDTH, CAMERA_HEIGHT, TextureOptions.BILINEAR);
-		this.mFaceTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mBitmapTextureAtlas, this, "MAQ_FRANCE.png", 0, 0);
-		this.mBitmapTextureAtlas.load();
+		loadGraphics();
 	}
 
 	@Override
@@ -83,7 +86,12 @@ public class BrickeatActivity extends SimpleBaseGameActivity implements Brickeat
 		final VertexBufferObjectManager vertexBufferObjectManager = this.getVertexBufferObjectManager();
 		Scene scene = new Scene();
 		scene.setBackground(new Background(Color.BLUE));
-		final Sprite face = new Sprite(0, 0, this.mFaceTextureRegion, vertexBufferObjectManager);
+
+		//Commencer le sprite en haut à gauche de l'écran.
+	    final int iStartX = -240;
+	    final int iStartY = -400;
+		final Sprite face = new Sprite(iStartX, iStartY, this.mFaceTextureRegion, vertexBufferObjectManager);
+
 		scene.attachChild(face);
 		return scene;
 	}
@@ -92,6 +100,15 @@ public class BrickeatActivity extends SimpleBaseGameActivity implements Brickeat
 	// Methods
 	// ===========================================================
 
+	/**
+	 * loadGraphics.
+	 */
+	private void loadGraphics() {
+	    BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
+	    mBitmapTextureAtlas = new BitmapTextureAtlas(getTextureManager(), 1024, 1024, TextureOptions.DEFAULT);
+	    mFaceTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mBitmapTextureAtlas, this, "MAQFRANCE.png", 0, 0);
+	    mBitmapTextureAtlas.load();    
+	}
 	// ===========================================================
 	// Inner and Anonymous Classes
 	// ===========================================================
